@@ -1,51 +1,48 @@
 def viterbi(obs, states, start_p, trans_p, emit_p):
+    """
+    Viterbi algorithm for Hidden Markov Models (HMMs)
+
+    Parameters:
+    - obs: list, sequence of observed events
+    - states: list, possible hidden states
+    - start_p: dict, initial probabilities of each state
+    - trans_p: dict of dicts, transition probabilities between states
+    - emit_p: dict of dicts, emission probabilities of observed events given each state
+
+    Returns:
+    - path: list, the most likely sequence of hidden states
+    - max_prob: float, the probability of the most likely path
+    """
     V = [{}]
-    for st in states:
-        V[0] [st] = {"prob": start_p[st] * emit_p[st] [obs[0]], "prev": None}
-    # Run Viterbi when t > 0
+    path = {}
+
+    # Initialize base cases (t == 0)
+    for state in states:
+        V[0][state] = start_p[state] * emit_p[state][obs[0]]
+        path[state] = [state]
+
+    # Run Viterbi for t > 0
     for t in range(1, len(obs)):
         V.append({})
-        for st in states:
-            max_tr_prob = V[t - 1] [states[0]] ["prob"] * trans_p[states[0]] [st] * emit_p[st] [obs[t]]
-            prev_st_selected = states[0]
-            for prev_st in states[1:]:
-                tr_prob = V[t - 1] [prev_st] ["prob"] * trans_p[prev_st] [st] * emit_p[st] [obs[t]]
-                if tr_prob > max_tr_prob:
-                    max_tr_prob = tr_prob
-                    prev_st_selected = prev_st
+        new_path = {}
 
-            max_prob = max_tr_prob
-            V[t] [st] = {"prob": max_prob, "prev": prev_st_selected}
+        for current_state in states:
+            (prob, state) = max(
+                (V[t - 1][prev_state] * trans_p[prev_state][current_state] * emit_p[current_state][obs[t]], prev_state)
+                for prev_state in states
+            )
+            V[t][current_state] = prob
+            new_path[current_state] = path[state] + [current_state]
 
-    for line in dptable(V):
-        print(line)
+        # Update the best path
+        path = new_path
 
-    print()
+    # Find the maximum probability and corresponding best path
+    (max_prob, last_state) = max((V[len(obs) - 1][state], state) for state in states)
 
-    opt = []
-    max_prob = 0.0
-    best_st = None
-    # Get most probable state and its backtrack
-    for st, data in V[-1].items():
-        if data["prob"] > max_prob:
-            max_prob = data["prob"]
-            best_st = st
-    opt.append(best_st)
-    previous = best_st
+    return path[last_state], max_prob
 
-    # Follow the backtrack till the first observation
-    for t in range(len(V) - 2, -1, -1):
-        opt.insert(0, V[t + 1] [previous] ["prev"])
-        previous = V[t + 1] [previous] ["prev"]
 
-    print("The steps of states are " + " ".join(opt) + " with highest probability of %s" % max_prob)
-
-def dptable(V):
-
-    # Print a table of steps from dictionary
-    yield " " * 5 + "     ".join(("%3d" % i) for i in range(len(V)))
-    for state in V[0]:
-        yield "%.7s: " % state + " ".join("%.7s" % ("%lf" % v[state] ["prob"]) for v in V)
 
 def main() -> None:
     obs = ("Flat", "Upward", "Downward", "Downward", "Flat", "Flat", "Flat")
@@ -62,7 +59,10 @@ def main() -> None:
         "Neutral": {"Upward": 0.3, "Downward": 0.2, "Flat": 0.5}
     }
 
-    viterbi(obs, states, start_p, trans_p, emit_p)
+    path, prob = viterbi(obs, states, start_p, trans_p, emit_p)
+
+    print(f"Highest Probable Path: {' → '.join(path)}")
+    print(f"Probability: {prob}")
 
 
 if __name__ == "__main__":
