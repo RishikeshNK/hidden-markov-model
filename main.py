@@ -48,7 +48,7 @@ def dptable(V):
         yield "%.7s: " % state + " ".join("%.7s" % ("%lf" % v[state] ["prob"]) for v in V)
 
 def main() -> None:
-    obs = ("Downward", "Flat", "Downward", "Downward", "Flat", "Flat", "Flat")
+    obs = ("Flat", "Upward", "Downward", "Downward", "Flat", "Flat", "Flat")
     states = ("Bullish", "Bearish", "Neutral")
     start_p = {"Bullish": 0.4, "Bearish": 0.3, "Neutral": 0.3}
     trans_p = {
@@ -59,7 +59,7 @@ def main() -> None:
     emit_p = {
         "Bullish": {"Upward": 0.5, "Downward": 0.2, "Flat": 0.3},
         "Bearish": {"Upward": 0.3, "Downward": 0.5, "Flat": 0.2},
-        "Neutral": {"Upward": 0.4, "Downward": 0.4, "Flat": 0.2}
+        "Neutral": {"Upward": 0.3, "Downward": 0.2, "Flat": 0.5}
     }
 
     viterbi(obs, states, start_p, trans_p, emit_p)
