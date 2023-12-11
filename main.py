@@ -71,7 +71,7 @@ def main() -> None:
 
     path, prob = viterbi(obs, states, start_p, trans_p, emit_p)
 
-    print(f"Highest Probable Path: {' → '.join(path)}")
+    print(f"Most Probable Path: {' → '.join(path)}")
     print(f"Probability: {prob}")
 
 
