@@ -4,7 +4,7 @@ def viterbi(
     start_p: dict[str, float],
     trans_p: dict[str, dict[str, float]],
     emit_p: dict[str, dict[str, float]],
-):
+) -> tuple[list[str], float]:
     """
     Viterbi algorithm for Hidden Markov Models (HMMs)
 
