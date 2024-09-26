@@ -1,5 +1,7 @@
 # Hidden Markov Model (HMM) - Viterbi Algorithm
 
+## Kanav Bengani and Rishi Kanabar
+
 This Python script implements the Viterbi algorithm for Hidden Markov Models (HMMs). The algorithm is used to find the most likely sequence of hidden states given a sequence of observed events. This is a final project for MATH 4581: Statistics and Stochastic Processes.
 
 ## Usage
